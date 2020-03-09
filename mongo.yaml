@@ -1,0 +1,108 @@
+version: "3.3"
+services:
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: maram-nginx:latest
+    container_name: maram-nginx
+    depends_on:
+      - backend
+    ports:
+      - 80:80
+      - 443:443
+    networks:
+      - parse_network
+  # MAIN APP BACKEND
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    image: backend:latest
+    container_name: backend
+    depends_on:
+      - mongodb-secondary
+      - redis-db
+    networks:
+      - parse_network
+    ports:
+      - 3000:3000
+      - 9229:9229
+    tty: true
+    env_file:
+      - backend.env
+    volumes:
+      - /var/app/node_modules
+      - ./backend:/var/app
+    restart: always
+  # REDIS DB
+  redis-db:
+    container_name: redis-db
+    image: redis
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data-redis/db:/data/db
+    command: --requirepass secret
+    networks:
+      - parse_network
+
+  # MONGO CLUSTER
+  mongodb-primary:
+    image: "bitnami/mongodb:4.2"
+    user: root
+    volumes:
+      - ./mongodb-persistence/bitnami:/bitnami
+    networks:
+      - parse_network
+    environment:
+      - MONGODB_REPLICA_SET_MODE=primary
+      - MONGODB_REPLICA_SET_KEY=123456789
+      - MONGODB_ROOT_USERNAME=admin-123
+      - MONGODB_ROOT_PASSWORD=password-123
+      - MONGODB_USERNAME=admin-123
+      - MONGODB_PASSWORD=password-123
+      - MONGODB_DATABASE=my_database
+    ports:
+      - 27017:27017
+
+  mongodb-secondary:
+    image: "bitnami/mongodb:4.2"
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_REPLICA_SET_MODE=secondary
+      - MONGODB_REPLICA_SET_KEY=123456789
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_PRIMARY_ROOT_USERNAME=admin-123
+      - MONGODB_PRIMARY_ROOT_PASSWORD=password-123
+    networks:
+      - parse_network
+    ports:
+      - 27027:27017
+
+  mongodb-arbiter:
+    image: "bitnami/mongodb:4.2"
+    depends_on:
+      - mongodb-primary
+    environment:
+      - MONGODB_ADVERTISED_HOSTNAME=mongodb-arbiter
+      - MONGODB_REPLICA_SET_MODE=arbiter
+      - MONGODB_PRIMARY_HOST=mongodb-primary
+      - MONGODB_PRIMARY_PORT_NUMBER=27017
+      - MONGODB_PRIMARY_ROOT_PASSWORD=password-123
+      - MONGODB_REPLICA_SET_KEY=123456789
+    networks:
+      - parse_network
+    ports:
+      - 27037:27017
+
+networks:
+  parse_network:
+    driver: bridge
+    ipam:
+      driver: default
+volumes:
+  mongodb_master_data:
+    driver: local

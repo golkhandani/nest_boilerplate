@@ -1,0 +1,54 @@
+version: "3.5"
+
+services:
+  # Databases # #
+  postgresql-test:
+    container_name: postgresql-test
+    image: postgres:11.2-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+      POSTGRES_DB: ${POSTGRES_DB:-crud-node}
+      PGDATA: /data/postgres
+    ports:
+      - 30001:5432
+    networks:
+      - test
+
+  redis-test:
+    container_name: redis-test
+    image: redis
+    ports:
+      - 30002:6379
+    volumes:
+      - redisdata:/data/db
+    networks:
+      - test
+
+  mongo-test:
+    container_name: mongo-test
+    image: mongo:4.0
+    ports:
+      - 30003:27017
+    volumes:
+      - mongodata1:/data/db
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=admin-123
+    #   - MONGO_INITDB_ROOT_PASSWORD=password-123
+    networks:
+      - test
+
+networks:
+  test:
+
+volumes:
+  mongodata1:
+    driver: local
+  mongodata2:
+    driver: local
+  mongodata3:
+    driver: local
+  pgadmin:
+    driver: local
+  redisdata:
+    driver: local

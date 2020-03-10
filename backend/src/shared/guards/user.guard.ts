@@ -31,7 +31,6 @@ export class UserGuard extends AuthGuard('jwt') {
          */
         const roles = this.reflector.get<string[]>('roles', context.getHandler());
         const scopes = this.reflector.get<string[]>('scopes', context.getHandler());
-        // console.log('scopes', scopes, 'roles', roles);
         if (!roles && !scopes) {
             return true;
         }
@@ -40,7 +39,6 @@ export class UserGuard extends AuthGuard('jwt') {
          */
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-        // console.log(user, 'user.scopes', user.scopes, 'user.role', user.role);
         if (!user || !user.role) {
             throw new UnauthorizedException();
         }

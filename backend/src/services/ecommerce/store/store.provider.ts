@@ -4,6 +4,9 @@ import { Store } from './models/store.model';
 import { ReturnModelType } from '@typegoose/typegoose';
 import { OwnershipProvider } from '../ownership/ownership.provider';
 import { OwnershipAccessLevel } from '../ownership/enums/ownershipLevel.enum';
+import { StoreInputDto } from './dtos/store-import.dto';
+import { Image } from '@shared/models';
+import { IMulterFile } from '@shared/interfaces';
 
 @Injectable()
 export class StoreProvider {
@@ -20,8 +23,8 @@ export class StoreProvider {
      *  "shop_id":"bebbcc0e-72f5-4692-aab4-a3444139111c",
      * }
      */
-    async createNewStore(storeInputDto: any, user_id: string) {
-        const store = await this.StoreModel.create({});
+    async createNewStore(storeInputDto: StoreInputDto, user_id: string) {
+        const store = await this.StoreModel.create(storeInputDto);
         const newOwnership = {
             user_id,
             access_levels: [OwnershipAccessLevel.OWNER],
@@ -31,6 +34,49 @@ export class StoreProvider {
         return {
             ownership, store,
         };
+    }
+
+    async addPictureToStore(store_id: string, logo?: IMulterFile, banner?: IMulterFile, vitrins?: IMulterFile[]) {
+        const update = {
+            $set: {},
+            $addToSet: {},
+        };
+        if (logo) {
+            Object.assign(update.$set, {
+                logo: {
+                    suffix: logo.path,
+                },
+            });
+        }
+        if (banner) {
+            Object.assign(update.$set, {
+                banner: {
+                    suffix: banner.path,
+                },
+            });
+        }
+        if (vitrins) {
+            Object.assign(update.$addToSet, {
+                vitrins: {
+                    $each: vitrins.map(item => ({ suffix: item.path })),
+                },
+            });
+        }
+        const updatedStore =
+            await this.StoreModel.findOneAndUpdate(
+                { store_id },
+                update,
+                { new: true },
+            );
+        return updatedStore;
+
+    }
+
+    async getStoreById(store_id: string) {
+        console.time('FIND');
+        const fn = await this.StoreModel.findOne({ store_id });
+        console.timeEnd('FIND');
+        return fn;
     }
 
 }

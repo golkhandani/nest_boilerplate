@@ -31,9 +31,8 @@ export class OwnershipGuard extends AuthGuard('jwt') {
         /**
          * retrun True if no role provided
          */
-        const roles = [UserRoles.USER]; // this.reflector.get<string[]>('roles', context.getHandler()) ||;
+        const roles = [UserRoles.SELLER]; // this.reflector.get<string[]>('roles', context.getHandler()) ||;
         const accessLevels = this.reflector.get<string[]>('accessLevels', context.getHandler());
-        // console.log('scopes', scopes, 'roles', roles);
         if (!roles && !accessLevels) {
             return true;
         }
@@ -43,10 +42,8 @@ export class OwnershipGuard extends AuthGuard('jwt') {
         const request = context.switchToHttp().getRequest<Request>();
         const user = request.user;
         const store_id = request.params.store_id;
-        console.log('OwnershipGuard', user, store_id);
         const ownership = await this.ownershipProvider.getSpecificOwner(user.user_id, store_id);
         if (ownership) { request.user.ownership = ownership; }
-        // console.log(user, 'user.scopes', user.scopes, 'user.role', user.role);
         if (!user || !user.role) {
             throw new UnauthorizedException();
         }

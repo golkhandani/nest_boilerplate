@@ -1,6 +1,7 @@
 import * as multer from 'multer';
 import { fsMakeDirIfNotExists } from './fs.helper';
 import { MulterModuleOptions } from '@nestjs/platform-express';
+import * as uuid from 'node-uuid';
 
 export const multerStorageMaker = (folder: string) => {
     return multer.diskStorage({
@@ -9,9 +10,8 @@ export const multerStorageMaker = (folder: string) => {
             cb(null, folder);
         },
         filename: (req, file, cb) => {
-            cb(null, Date.now() + '__' + file.originalname);
+            cb(null, uuid.v4() + '__' + file.originalname);
         },
     });
 };
-
 

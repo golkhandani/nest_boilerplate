@@ -1,9 +1,11 @@
 
-import { prop, arrayProp } from '@typegoose/typegoose';
+import { prop, arrayProp, index } from '@typegoose/typegoose';
 import { IsString, IsOptional } from 'class-validator';
 import * as uuid from 'node-uuid';
 import { SchemaOptions } from 'mongoose';
 import { OwnershipAccessLevel } from '../enums/ownershipLevel.enum';
+
+@index({ user_id: 1, store_id: 1 }, { unique: true })
 export class Ownership {
     @IsOptional()
     @prop({

@@ -16,6 +16,7 @@ import { ResellerModule } from '@services/businesses/reseller.module';
 import { AdminModule } from '@services/ecommerce/admin/admin.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { TerminusOptionsService } from '@shared/termius/termius.service';
+import { StoreModule } from '@services/ecommerce/store/store.module';
 
 @Module({
   imports: [
@@ -39,6 +40,8 @@ import { TerminusOptionsService } from '@shared/termius/termius.service';
     // ecommerce
     ResellerModule,
     AdminModule,
+
+    StoreModule,
   ],
   controllers: [AppController],
   providers: [],

@@ -291,6 +291,7 @@ export class AuthenticationProvider {
                 NotificationTemplate.LOGIN,
             );
             return {
+                code,
                 codeType,
                 codeLength,
                 expires,
@@ -304,6 +305,7 @@ export class AuthenticationProvider {
         } else if (moment(exists.nextTryTime).isAfter(Date.now())) {
             const { cooldownDuration, cooldownProgress } = this.calculateCooldownTimes(exists.lastTryTime, exists.nextTryTime);
             return {
+                code: exists.code,
                 codeType: exists.codeType,
                 codeLength: exists.codeLength,
                 expires: exists.expires,
@@ -336,6 +338,7 @@ export class AuthenticationProvider {
                 NotificationTemplate.LOGIN,
             );
             return {
+                code,
                 codeType,
                 codeLength,
                 expires,

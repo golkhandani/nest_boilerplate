@@ -7,36 +7,34 @@ export const pushTemplates = {
       data: {
         title: 'LOGIN',
         content: `${token1}`,
-      }
+      },
     };
   },
   [NotificationTemplate.PAYMENT_INCOME]: async (credit_amount: string, name?: string, reference_code?: string) => {
     return {
       data: {
-        title: 'واریز',
-        content: `مبلغ ${numberWithCommas(await CreditHasher.dehashWalletCredit(credit_amount) / 10)} تومان از طرف ${name} به حساب شما واریز شد`,
+        title: 'xxx',
+        content: 'xxx',
         action: {
-          url: 'app://shahrpay',
+          url: 'app://xxx',
           action_type: 'U',
         },
       },
       custom_content: {
-        title: 'واریز',
-        content: `مبلغ ${numberWithCommas(await CreditHasher.dehashWalletCredit(credit_amount) / 10)} تومان از طرف ${name} به حساب شما واریز شد`,
+        title: 'xxx',
+        content: 'xxx',
       },
     };
   },
   [NotificationTemplate.PAYMENT_OUTCOME]: async (credit_amount: string, name?: string, reference_code?: string) => {
     return {
       data: {
-        title: 'برداشت',
-        // tslint:disable-next-line: max-line-length
-        content: `مبلغ ${numberWithCommas(await CreditHasher.dehashWalletCredit(credit_amount) / 10)} تومان از حساب شما کسر و به حساب ${name} واریز شد.`,
+        title: 'xxx',
+        content: 'xxx',
       },
       custom_content: {
-        title: 'برداشت',
-        // tslint:disable-next-line: max-line-length
-        content: `مبلغ ${numberWithCommas(await CreditHasher.dehashWalletCredit(credit_amount) / 10)} تومان از حساب شما کسر و به حساب ${name} واریز شد.`,
+        title: 'xxx',
+        content: 'xxx'
       },
     };
   },

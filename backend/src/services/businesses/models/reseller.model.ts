@@ -4,7 +4,7 @@ import * as uuid from 'node-uuid';
 import { SchemaOptions } from 'mongoose';
 
 export enum ResellerName {
-  TOMAN = 'TOMAN',
+  API = 'API',
 }
 export const resellerSchemaOptions: SchemaOptions = {
   collection: 'maram_reseller',

@@ -36,7 +36,8 @@ export class StoreProvider {
         };
     }
 
-    async addPictureToStore(store_id: string, logo?: IMulterFile, banner?: IMulterFile, vitrins?: IMulterFile[]) {
+    async addMediaToStore(store_id: string, logo?: IMulterFile, banner?: IMulterFile, vitrins?: IMulterFile[]) {
+        console.log(vitrins);
         const update = {
             $set: {},
             $addToSet: {},
@@ -44,6 +45,7 @@ export class StoreProvider {
         if (logo) {
             Object.assign(update.$set, {
                 logo: {
+                    mimetype: logo.mimetype,
                     suffix: logo.path,
                 },
             });
@@ -51,6 +53,7 @@ export class StoreProvider {
         if (banner) {
             Object.assign(update.$set, {
                 banner: {
+                    mimetype: banner.mimetype,
                     suffix: banner.path,
                 },
             });
@@ -58,7 +61,10 @@ export class StoreProvider {
         if (vitrins) {
             Object.assign(update.$addToSet, {
                 vitrins: {
-                    $each: vitrins.map(item => ({ suffix: item.path })),
+                    $each: vitrins.map(item => ({
+                        mimetype: item.mimetype,
+                        suffix: item.path,
+                    })),
                 },
             });
         }

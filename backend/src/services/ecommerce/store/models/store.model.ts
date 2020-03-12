@@ -6,8 +6,10 @@ import { StoreKind } from '../enums/storeKind.enum';
 import { Branch } from './branch.model';
 import { Image } from '@shared/models/image.model';
 import { serverConstants } from '@constants/index';
+import { GalleryItem } from '@shared/models/gallery.model';
 
-@index({ 'categories': 'text', 'sucategories': 'text', 'tags': 'text', 'branches.title': 'text' })
+@index({ 'categories': 'text', 'subcategories': 'text', 'tags': 'text', 'branches.title': 'text' })
+@index({ title: 'text', subtitle: 'text' })
 export class Store {
     @IsOptional()
     @prop({
@@ -32,6 +34,19 @@ export class Store {
     })
     isActive: boolean;
 
+    @IsOptional()
+    @prop({
+        type: String,
+        index: true,
+    })
+    title: string;
+    @IsOptional()
+    @prop({
+        type: String,
+        index: true,
+    })
+    subtitle: string;
+
     @arrayProp({
         items: Branch,
     })
@@ -45,7 +60,7 @@ export class Store {
     @arrayProp({
         items: String,
     })
-    sucategories: string[];
+    subcategories: string[];
 
     @arrayProp({
         items: String,
@@ -53,17 +68,20 @@ export class Store {
     tags: string[];
 
     @prop({
-        type: Image,
+        _id: false,
+        type: GalleryItem,
     })
-    logo: Image;
+    logo: GalleryItem;
     @prop({
-        type: Image,
+        _id: false,
+        type: GalleryItem,
     })
-    banner: Image;
+    banner: GalleryItem;
     @arrayProp({
-        items: Image,
+        _id: false,
+        items: GalleryItem,
     })
-    vitrins: Image[];
+    vitrins: GalleryItem[];
 
 }
 

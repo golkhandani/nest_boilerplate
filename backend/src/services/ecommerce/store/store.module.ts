@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { StoreController } from './store.controller';
 import { TypegooseModule } from 'nestjs-typegoose';
 import * as multer from 'multer';
 import * as uuid from 'node-uuid';
+import * as redisStore from 'cache-manager-redis-store';
 
 import { Store, storeSchemaOptions } from './models/store.model';
 import { StoreProvider } from './store.provider';
@@ -10,9 +11,9 @@ import { StoreProvider } from './store.provider';
 import { OwnershipModule } from '../ownership/ownership.module';
 import { MulterModuleOptions, MulterModule } from '@nestjs/platform-express';
 import { fsMakeDirIfNotExists } from '@shared/helpers';
+import { redisConstants } from '@constants/index';
 
 export const tempfolder: string = `./statics/store/pictures`;
-
 export const multerStorageMaker = (folder: string) => {
     return multer.diskStorage({
         destination: async (req, file, cb) => {
@@ -25,15 +26,18 @@ export const multerStorageMaker = (folder: string) => {
         },
     });
 };
-
 export const storage = multerStorageMaker(tempfolder);
 export const multerOptions: MulterModuleOptions = {
     storage,
 };
-
+console.log(redisConstants);
 @Module({
     imports: [
         OwnershipModule,
+        CacheModule.register({
+            store: redisStore,
+            ...redisConstants,
+        }),
         MulterModule.register(multerOptions),
         TypegooseModule.forFeature([{
             typegooseClass: Store,

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UseGuards, Res, Req, Put, UseInterceptors, UploadedFiles, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Res, Req, Put, UseInterceptors, UploadedFiles, Param, CacheInterceptor } from '@nestjs/common';
 import { StoreProvider } from './store.provider';
 import { UserGuard } from '@shared/guards';
 import { UserFromHeader } from '@shared/decorators';
@@ -8,6 +8,7 @@ import { Image } from '@shared/models';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 
 @Controller(StoreController.path)
+@UseInterceptors(CacheInterceptor)
 export class StoreController {
     public static path: string = 'stores';
     constructor(
@@ -36,7 +37,7 @@ export class StoreController {
         @Param('store_id') store_id,
         @UploadedFiles() files: { logo, banner, vitrins },
     ) {
-        return this.storeProvider.addPictureToStore(store_id, files.logo[0], files.banner[0], files.vitrins);
+        return this.storeProvider.addMediaToStore(store_id, files.logo[0], files.banner[0], files.vitrins);
     }
     @AccessLevels(OwnershipAccessLevel.AGENT, OwnershipAccessLevel.OWNER)
     @UseGuards(OwnershipGuard)

@@ -11,24 +11,43 @@ export class CategorySubcategoryTagProvider {
         @InjectModel(CategorySubcategoryTag) private readonly CategorySubcategoryTagModel: ReturnModelType<typeof CategorySubcategoryTag>,
     ) { }
 
-    async createNew(cstObj: CategorySubcategoryTagInputDto, cstIcon: IMulterFile): Promise<CategorySubcategoryTag> {
-        const saved = await this.CategorySubcategoryTagModel
-            .create(
-                Object.assign(cstObj, {
-                    icon: {
-                        mimetype: cstIcon.mimetype,
-                        suffix: cstIcon,
-                    },
-                }),
-            );
-        return saved;
+    async findOrCreate(cstObj: CategorySubcategoryTagInputDto, cstIcon?: IMulterFile): Promise<CategorySubcategoryTag> {
+        const fn = await this.CategorySubcategoryTagModel
+            .findOne({
+                $or: [
+                    { cst_id: cstObj.title },
+                    { $text: { $search: cstObj.title } },
+                ],
+            });
+        if (fn) {
+            return fn;
+        } else {
+            const saved = await this.CategorySubcategoryTagModel
+                .create(
+                    Object.assign(cstObj, {
+                        ...cstIcon && {
+                            icon: {
+                                mimetype: cstIcon?.mimetype,
+                                suffix: cstIcon?.path,
+                            },
+                        },
+                    }),
+                );
+            return saved;
+        }
     }
-    async getOne(identifier: string): Promise<CategorySubcategoryTag[]> {
+    async findAll(kind: string, identifier: string): Promise<CategorySubcategoryTag[]> {
+        console.log(kind, identifier);
         return await this.CategorySubcategoryTagModel
             .find({
-                $or: [
-                    { cst_id: identifier },
-                    { $text: { $search: { $regex: `/*${identifier}*/` } } },
+                $and: [
+                    { kind },
+                    {
+                        $or: [
+                            { cst_id: identifier },
+                            { $text: { $search: identifier } },
+                        ],
+                    },
                 ],
             });
     }

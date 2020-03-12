@@ -14,7 +14,7 @@ export class StoreInputDto {
 
     categories: string[];
 
-    sucategories: string[];
+    subcategories: string[];
 
     tags: string[];
 

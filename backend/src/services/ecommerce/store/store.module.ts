@@ -12,6 +12,7 @@ import { OwnershipModule } from '../ownership/ownership.module';
 import { MulterModuleOptions, MulterModule } from '@nestjs/platform-express';
 import { fsMakeDirIfNotExists } from '@shared/helpers';
 import { redisConstants } from '@constants/index';
+import { CategorySubcategoryTagModule } from '../category-subcategory-tag/cst.module';
 
 export const tempfolder: string = `./statics/store/pictures`;
 export const multerStorageMaker = (folder: string) => {
@@ -34,6 +35,7 @@ console.log(redisConstants);
 @Module({
     imports: [
         OwnershipModule,
+        CategorySubcategoryTagModule,
         CacheModule.register({
             store: redisStore,
             ...redisConstants,

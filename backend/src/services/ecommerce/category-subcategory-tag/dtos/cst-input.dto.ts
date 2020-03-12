@@ -1,5 +1,9 @@
+import { CstKind } from '../enums/cst.enum';
+
 export class CategorySubcategoryTagInputDto {
-    title: string;
-    subtitle: string;
-    parent: string;
+
+    kind: CstKind;
+    title?: string;
+    subtitle?: string;
+    parent?: string;
 }

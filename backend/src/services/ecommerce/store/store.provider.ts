@@ -7,12 +7,16 @@ import { OwnershipAccessLevel } from '../ownership/enums/ownershipLevel.enum';
 import { StoreInputDto } from './dtos/store-import.dto';
 import { Image } from '@shared/models';
 import { IMulterFile } from '@shared/interfaces';
+import { CategorySubcategoryTagProvider } from '../category-subcategory-tag/cst.provider';
+import { CstKind } from '../category-subcategory-tag/enums/cst.enum';
 
 @Injectable()
 export class StoreProvider {
     constructor(
         @InjectModel(Store) private readonly StoreModel: ReturnModelType<typeof Store>,
         private readonly ownerProvider: OwnershipProvider,
+        private readonly categorySubcategoryTagProvider: CategorySubcategoryTagProvider,
+
     ) { }
 
     /**
@@ -24,7 +28,31 @@ export class StoreProvider {
      * }
      */
     async createNewStore(storeInputDto: StoreInputDto, user_id: string) {
+        const cats = await Promise.all(
+            storeInputDto.categories.map(async (category) => {
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.CATEGORY, title: category });
+                return c.cst_id;
+            }),
+        );
+        const subcats = await Promise.all(
+            storeInputDto.subcategories.map(async (subcategory) => {
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: subcategory });
+                return c.cst_id;
+            }),
+        );
+        const tags = await Promise.all(
+            storeInputDto.tags.map(async (tag) => {
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: tag });
+                return c.cst_id;
+            }),
+        );
+
+        storeInputDto.categories = cats;
+        storeInputDto.subcategories = subcats;
+        storeInputDto.tags = tags;
+
         const store = await this.StoreModel.create(storeInputDto);
+
         const newOwnership = {
             user_id,
             access_levels: [OwnershipAccessLevel.OWNER],

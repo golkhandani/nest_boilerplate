@@ -17,6 +17,7 @@ import { AdminModule } from '@services/ecommerce/admin/admin.module';
 import { TerminusModule } from '@nestjs/terminus';
 import { TerminusOptionsService } from '@shared/termius/termius.service';
 import { StoreModule } from '@services/ecommerce/store/store.module';
+import { CategorySubcategoryTagModule } from '@services/ecommerce/category-subcategory-tag/cst.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { StoreModule } from '@services/ecommerce/store/store.module';
     AdminModule,
 
     StoreModule,
+    CategorySubcategoryTagModule,
   ],
   controllers: [AppController],
   providers: [],

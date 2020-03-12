@@ -4,6 +4,7 @@ import * as uuid from 'node-uuid';
 import { GalleryItem } from '@shared/models';
 import { SchemaOptions } from 'mongoose';
 import { serverConstants } from '@constants/index';
+import { CstKind } from '../enums/cst.enum';
 
 @index({ title: 'text', subtitle: 'text' })
 export class CategorySubcategoryTag {
@@ -21,6 +22,14 @@ export class CategorySubcategoryTag {
         index: true,
     })
     title: string;
+    @IsOptional()
+    @prop({
+        required: true,
+        default: CstKind.TAG,
+        type: String,
+        index: true,
+    })
+    kind: CstKind;
     @IsOptional()
     @prop({
         type: String,

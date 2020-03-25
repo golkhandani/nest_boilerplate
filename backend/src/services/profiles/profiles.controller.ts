@@ -24,7 +24,6 @@ import { UserScopes } from '@services/authorization/models';
 
 @Controller(UsersProfileController.path)
 @ApiTags(UsersProfileController.path)
-@UseInterceptors(CacheInterceptor)
 export class UsersProfileController {
 
     public static path = 'users';

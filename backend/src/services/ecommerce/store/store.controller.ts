@@ -6,9 +6,9 @@ import { OwnershipGuard, AccessLevels } from '../ownership/ownership.guard';
 import { OwnershipAccessLevel } from '../ownership/enums/ownershipLevel.enum';
 import { Image } from '@shared/models';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { StoreInputDto } from './dtos/store-import.dto';
 
 @Controller(StoreController.path)
-@UseInterceptors(CacheInterceptor)
 export class StoreController {
     public static path: string = 'stores';
     constructor(
@@ -19,7 +19,7 @@ export class StoreController {
     @Post('')
     async createNewStore(
         @UserFromHeader() user,
-        @Body() store,
+        @Body() store: StoreInputDto,
     ) {
         return await this.storeProvider.createNewStore(store, user.user_id);
     }
@@ -45,7 +45,9 @@ export class StoreController {
     async getStore(
         @Param('store_id') store_id,
     ) {
-        return await this.storeProvider.getStoreById(store_id);
+        return {
+            data: await this.storeProvider.getStoreById(store_id),
+        };
     }
 
     @UseGuards(OwnershipGuard)

@@ -18,7 +18,19 @@ import { TerminusModule } from '@nestjs/terminus';
 import { TerminusOptionsService } from '@shared/termius/termius.service';
 import { StoreModule } from '@services/ecommerce/store/store.module';
 import { CategorySubcategoryTagModule } from '@services/ecommerce/category-subcategory-tag/cst.module';
+import { mongoose } from '@typegoose/typegoose';
 
+mongoose.set('debug', function (coll, method, query, doc, options) {
+  const set = {
+    coll,
+    method,
+    query,
+    doc,
+    options,
+  };
+
+  console.log(JSON.stringify(set));
+});
 @Module({
   imports: [
     TerminusModule.forRootAsync({

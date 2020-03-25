@@ -1,3 +1,4 @@
+
 export const mongoConstants = {
     uri: process.env.MONGO_CONSTANTS_URI,
     options: {
@@ -5,5 +6,6 @@ export const mongoConstants = {
         useFindAndModify: false,
         useUnifiedTopology: true,
         useCreateIndex: true,
+        debug: true,
     },
 };

@@ -69,3 +69,65 @@ export const categorySubcategoryTagSchemaOptions: SchemaOptions = {
         },
     },
 };
+export const cstLookup = {
+    category: {
+        from: categorySubcategoryTagSchemaOptions.collection,
+        let: { ids: '$categories' },
+        pipeline: [
+            {
+                $match:
+                {
+                    $expr:
+                    {
+                        $and:
+                            [
+                                { $in: ['$cst_id', '$$ids'] },
+                            ],
+                    },
+                },
+            },
+            { $project: { title: 1, icon: 1, subtitle: 1, _id: 0 } },
+        ],
+        as: 'categories',
+    },
+    subctegory: {
+        from: categorySubcategoryTagSchemaOptions.collection,
+        let: { ids: '$subcategories' },
+        pipeline: [
+            {
+                $match:
+                {
+                    $expr:
+                    {
+                        $and:
+                            [
+                                { $in: ['$cst_id', '$$ids'] },
+                            ],
+                    },
+                },
+            },
+            { $project: { title: 1, icon: 1, subtitle: 1, _id: 0 } },
+        ],
+        as: 'subcategories',
+    },
+    tag: {
+        from: categorySubcategoryTagSchemaOptions.collection,
+        let: { ids: '$tags' },
+        pipeline: [
+            {
+                $match:
+                {
+                    $expr:
+                    {
+                        $and:
+                            [
+                                { $in: ['$cst_id', '$$ids'] },
+                            ],
+                    },
+                },
+            },
+            { $project: { title: 1, icon: 1, subtitle: 1, _id: 0 } },
+        ],
+        as: 'tags',
+    },
+};

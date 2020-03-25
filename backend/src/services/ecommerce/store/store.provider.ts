@@ -9,6 +9,7 @@ import { Image } from '@shared/models';
 import { IMulterFile } from '@shared/interfaces';
 import { CategorySubcategoryTagProvider } from '../category-subcategory-tag/cst.provider';
 import { CstKind } from '../category-subcategory-tag/enums/cst.enum';
+import { categorySubcategoryTagSchemaOptions, cstLookup } from '../category-subcategory-tag/models/cst.model';
 
 @Injectable()
 export class StoreProvider {
@@ -28,44 +29,66 @@ export class StoreProvider {
      * }
      */
     async createNewStore(storeInputDto: StoreInputDto, user_id: string) {
-        const cats = await Promise.all(
+        console.log('storeInputDto', storeInputDto);
+        const categories = await Promise.all(
             storeInputDto.categories.map(async (category) => {
-                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.CATEGORY, title: category });
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.CATEGORY, title: category.title });
                 return c.cst_id;
             }),
         );
-        const subcats = await Promise.all(
+        const subcategories = await Promise.all(
             storeInputDto.subcategories.map(async (subcategory) => {
-                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: subcategory });
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: subcategory.title });
                 return c.cst_id;
             }),
         );
         const tags = await Promise.all(
             storeInputDto.tags.map(async (tag) => {
-                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: tag });
+                const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, title: tag.title });
                 return c.cst_id;
             }),
         );
+        const newStore = new Store();
+        newStore.kind = storeInputDto.kind;
+        newStore.title = storeInputDto.title;
+        newStore.subtitle = storeInputDto.subtitle;
+        newStore.branches = storeInputDto.branches;
+        newStore.categories = categories;
+        newStore.subcategories = subcategories;
+        newStore.tags = tags;
 
-        storeInputDto.categories = cats;
-        storeInputDto.subcategories = subcats;
-        storeInputDto.tags = tags;
+        console.log('storeInputDto1', storeInputDto);
+        // storeInputDto.categories = categories;
+        // storeInputDto.subcategories = subcategories;
+        // storeInputDto.tags = tags;
 
-        const store = await this.StoreModel.create(storeInputDto);
-
+        const store = await this.StoreModel.create(
+            newStore,
+        );
+        console.log('storeInputDto2', storeInputDto);
         const newOwnership = {
             user_id,
             access_levels: [OwnershipAccessLevel.OWNER],
             store_id: store.store_id,
         };
         const ownership = await this.ownerProvider.create(newOwnership);
+        const savedStore = Object.assign(store,
+            { categories: storeInputDto.categories },
+            { subcategories: storeInputDto.subcategories },
+            { tags: storeInputDto.tags },
+        );
+        console.log('savedStore', savedStore);
         return {
-            ownership, store,
+            ownership,
+            store: Object.assign(store.toObject(),
+                { categories: storeInputDto.categories },
+                { subcategories: storeInputDto.subcategories },
+                { tags: storeInputDto.tags },
+            ),
         };
     }
 
     async addMediaToStore(store_id: string, logo?: IMulterFile, banner?: IMulterFile, vitrins?: IMulterFile[]) {
-        console.log(vitrins);
         const update = {
             $set: {},
             $addToSet: {},
@@ -107,9 +130,44 @@ export class StoreProvider {
     }
 
     async getStoreById(store_id: string) {
-        console.time('FIND');
-        const fn = await this.StoreModel.findOne({ store_id });
-        console.timeEnd('FIND');
+        const [fn] = await this.StoreModel.aggregate([
+            { $match: { store_id } },
+            {
+                $lookup: cstLookup.category,
+            },
+            {
+                $lookup: cstLookup.subctegory,
+            },
+            {
+                $lookup: cstLookup.tag,
+            },
+        ]);
+
+        // const categories = await Promise.all(
+        //     fn.categories.map(async (category) => {
+        //         const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.CATEGORY, cst_id: category });
+        //         return c.cst_id;
+        //     }),
+        // );
+        // const subcategories = await Promise.all(
+        //     fn.subcategories.map(async (subcategory) => {
+        //         const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, cst_id: subcategory });
+        //         return c.cst_id;
+        //     }),
+        // );
+        // const tags = await Promise.all(
+        //     fn.tags.map(async (tag) => {
+        //         const c = await this.categorySubcategoryTagProvider.findOrCreate({ kind: CstKind.SUBCATEGORY, cst_id: tag });
+        //         return c.cst_id;
+        //     }),
+        // );
+        // const store = Object.assign(fn.toObject(),
+        //     { categories },
+        //     { subcategories },
+        //     { tags },
+        // );
+        // console.log(store);
+        // return store;
         return fn;
     }
 

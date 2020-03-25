@@ -6,4 +6,5 @@ export class CategorySubcategoryTagInputDto {
     title?: string;
     subtitle?: string;
     parent?: string;
+    cst_id?: string;
 }

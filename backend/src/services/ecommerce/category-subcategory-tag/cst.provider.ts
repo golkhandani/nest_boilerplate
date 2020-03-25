@@ -16,7 +16,8 @@ export class CategorySubcategoryTagProvider {
             .findOne({
                 $or: [
                     { cst_id: cstObj.title },
-                    { $text: { $search: cstObj.title } },
+                    { title: cstObj.title },
+                    // { $text: { $search: cstObj.title } },
                 ],
             });
         if (fn) {
@@ -37,7 +38,6 @@ export class CategorySubcategoryTagProvider {
         }
     }
     async findAll(kind: string, identifier: string): Promise<CategorySubcategoryTag[]> {
-        console.log(kind, identifier);
         return await this.CategorySubcategoryTagModel
             .find({
                 $and: [

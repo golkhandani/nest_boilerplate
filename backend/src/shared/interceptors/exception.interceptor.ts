@@ -13,6 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest();
     const status = exception.getStatus();
     let notification: ControllerNotification;
+    console.log(exception.message.message);
     if (status >= 400 && typeof (exception.message.message || exception.message) !== 'object') {
       notification = {
         message: exception.message.message || exception.message,

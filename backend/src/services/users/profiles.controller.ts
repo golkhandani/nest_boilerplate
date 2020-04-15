@@ -17,8 +17,8 @@ import { UserGuard as RoleGuard, Roles, Scopes } from '@shared/guards';
 import { User, UserRoles } from '@shared/models';
 import { IApi, IMulterFile } from '@shared/interfaces';
 
-import { UsersProfileProvider } from '@services/profiles/profiles.provider';
-import { UpdateUserDto } from '@services/profiles/dtos';
+import { UsersProfileProvider } from '@services/users/profiles.provider';
+import { UpdateUserDto } from '@services/users/dtos';
 
 import { UserScopes } from '@services/authorization/models';
 

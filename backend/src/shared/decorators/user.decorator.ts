@@ -1,5 +1,5 @@
 import { createParamDecorator } from '@nestjs/common';
-import { User, UserRoles } from '../models/users.model';
+import { User, UserRoles } from '../../services/users/models/users.model';
 import { UserScopes } from '@services/authorization/models';
 export interface UserInHeader {
     user_id: string;

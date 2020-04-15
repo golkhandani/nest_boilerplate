@@ -3,7 +3,7 @@ import * as redisStore from 'cache-manager-redis-store';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { User, userSchemaOptions } from '@shared/models/users.model';
+import { User, userSchemaOptions } from '@services/users/models/users.model';
 import { UsersProfileController } from './profiles.controller';
 import { UsersProfileProvider } from './profiles.provider';
 import { redisConstants } from '@constants/index';

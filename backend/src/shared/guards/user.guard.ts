@@ -3,7 +3,7 @@ import { Injectable, CanActivate, ExecutionContext, ForbiddenException, Unauthor
 import { Observable } from 'rxjs';
 import { SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { User } from '@shared/models/users.model';
+import { User } from '@services/users/models/users.model';
 import { AuthGuard } from '@nestjs/passport';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { AuthenticationProvider } from '@services/authentication/authentication.provider';

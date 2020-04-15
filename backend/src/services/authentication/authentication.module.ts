@@ -21,7 +21,7 @@ import { UserAlreadyExist } from '@services/authentication/validators';
 
 import { AuthorizationModule } from '@services/authorization/authorization.module';
 import { NotificatonModule } from '@services/notification/notification.module';
-import { UsersProfileModule } from '@services/profiles/profiles.modules';
+import { UsersProfileModule } from '@services/users/profiles.modules';
 
 @Module({
     imports: [

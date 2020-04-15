@@ -26,7 +26,7 @@ import { WsException } from '@nestjs/websockets';
 import { AuthorizationProvider } from '@services/authorization/authorization.provider';
 import { UserScopes } from '@services/authorization/models';
 import { NotificationService } from '@services/notification/notification.provider';
-import { UsersProfileProvider } from '@services/profiles/profiles.provider';
+import { UsersProfileProvider } from '@services/users/profiles.provider';
 import { NotificationTemplate } from '@services/notification/enums/notificationTemplate.enum';
 import { RefreshTokenRepository } from './repositories/refresh-token.repository';
 import { PhoneVerificationRepository } from './repositories/phone-verification.repository';

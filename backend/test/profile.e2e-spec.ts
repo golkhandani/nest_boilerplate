@@ -1,8 +1,8 @@
 import * as request from 'supertest';
 import { Test } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { UsersProfileProvider } from '../src/services/profiles/profiles.provider';
-import { UsersProfileModule } from '../src/services/profiles/profiles.modules';
+import { UsersProfileProvider } from '../src/services/users/profiles.provider';
+import { UsersProfileModule } from '../src/services/users/profiles.modules';
 import { UsersModule } from '../src/services/users/users.module';
 
 describe('Profile', () => {

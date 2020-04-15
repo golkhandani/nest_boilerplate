@@ -1,4 +1,4 @@
-import { User } from '@shared/models/users.model';
+import { User } from '@services/users/models/users.model';
 import { ApiProperty } from '@nestjs/swagger';
 import { OAuth2Dto } from '.';
 export class UserWithTokenDto {

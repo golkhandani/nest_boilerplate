@@ -9,7 +9,6 @@ function setDevEnv() {
 setDevEnv();
 
 export * from './bcryptConstants';
-export * from './efardaConstants';
 export * from './googleConstants';
 export * from './jwtLockConstants';
 export * from './jwtUnlockConstants';
@@ -22,4 +21,3 @@ export * from './rateLimitConstants';
 export * from './redisConstants';
 export * from './serverConstants';
 export * from './winstonLoggerConstants';
-export * from './zarinpalConstants';

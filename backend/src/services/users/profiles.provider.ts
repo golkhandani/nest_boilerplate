@@ -1,7 +1,7 @@
 
 import { BadRequestException, Injectable, HttpException } from '@nestjs/common';
 
-import { User } from '../../shared/models/users.model';
+import { User } from './models/users.model';
 import { UpdateUserDto } from './dtos';
 import { UserInHeader } from '@shared/decorators';
 import { fsRemoveFileIfExists } from '@shared/helpers';

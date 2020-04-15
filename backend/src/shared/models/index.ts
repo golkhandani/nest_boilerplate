@@ -1,2 +1,2 @@
 export * from './jwtPayload.model';
-export * from './users.model';
+export * from '../../services/users/models/users.model';
